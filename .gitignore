@@ -128,3 +128,5 @@ django_openpay_repo/
 /data
 !testing/*
 !testing/data/*
+
+.idea/

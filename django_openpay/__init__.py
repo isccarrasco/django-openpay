@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
-from django.utils.translation import ugettext, ugettext_lazy, ungettext_lazy
 
 import openpay
 
