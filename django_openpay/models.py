@@ -9,15 +9,15 @@ from django.utils.dateparse import parse_datetime, parse_date
 from decimal import Decimal
 from jsonfield import JSONField
 
-from . import openpay, hardcode, ugettext_lazy, exceptions, ungettext_lazy
+from . import openpay, hardcode, gettext_lazy, exceptions, ngettext_lazy
 from .decorators import skippable
 from .utils import get_customer_model
 
 
 phone_validator = RegexValidator(
     regex=r'^\d{9,15}$',
-    message=ugettext_lazy("The telephone number can only contain digits. "
-                          " The maximum number of digits is 15.")
+    message=gettext_lazy("The telephone number can only contain digits. "
+                         " The maximum number of digits is 15.")
 )
 
 CustomerModel = settings.OPENPAY_CUSTOMER_MODEL
@@ -27,18 +27,18 @@ class AbstractOpenpayBase(models.Model):
     openpay_id = models.CharField(
         max_length=100,
         blank=True,
-        verbose_name=ugettext_lazy('Openpay ID'))
+        verbose_name=gettext_lazy('Openpay ID'))
     # Not using auto_now_add because this is not the date from Django, but
     # the one from Openpay
     deleted = models.BooleanField(
         default=False,
         blank=True,
         null=False,
-        verbose_name=ugettext_lazy('Deleted from Openpay'))
+        verbose_name=gettext_lazy('Deleted from Openpay'))
     creation_date = models.DateTimeField(
         blank=True,
         null=False,
-        verbose_name=ugettext_lazy('Creation date'))
+        verbose_name=gettext_lazy('Creation date'))
 
     class Meta:
         abstract = True
@@ -104,35 +104,35 @@ class AbstractOpenpayBase(models.Model):
 class Address(models.Model):
     city = models.TextField(
         blank=False,
-        verbose_name=ugettext_lazy('City'))
+        verbose_name=gettext_lazy('City'))
     state = models.TextField(
         blank=False,
-        verbose_name=ugettext_lazy('State'))
+        verbose_name=gettext_lazy('State'))
     line1 = models.CharField(
         max_length=100,
         blank=False,
-        verbose_name=ugettext_lazy('Street (Line 1)'))
+        verbose_name=gettext_lazy('Street (Line 1)'))
     line2 = models.CharField(
         max_length=100,
         blank=True,
-        verbose_name=ugettext_lazy('Street (Line 2)'))
+        verbose_name=gettext_lazy('Street (Line 2)'))
     line3 = models.CharField(
         max_length=100,
         blank=True,
-        verbose_name=ugettext_lazy('Street (Line 3)'))
+        verbose_name=gettext_lazy('Street (Line 3)'))
     postal_code = models.IntegerField(
         blank=False,
         null=False,
-        verbose_name=ugettext_lazy('Postal Code'))
+        verbose_name=gettext_lazy('Postal Code'))
     country_code = models.CharField(
         choices=hardcode.address_countrycodes,
         default='MX',
         max_length=5,
         blank=True,
-        verbose_name=ugettext_lazy('Country'))
+        verbose_name=gettext_lazy('Country'))
     creation_date = models.DateTimeField(
         auto_now_add=True,
-        verbose_name=ugettext_lazy('Creation date'))
+        verbose_name=gettext_lazy('Creation date'))
 
     @classmethod
     def get_readonly_fields(self, instance=None):
@@ -164,26 +164,26 @@ class AbstractCustomer(AbstractOpenpayBase):
     first_name = models.CharField(
         max_length=60,
         blank=False,
-        verbose_name=ugettext_lazy('First Name'))
+        verbose_name=gettext_lazy('First Name'))
     last_name = models.CharField(
         max_length=60,
         blank=True,
-        verbose_name=ugettext_lazy('Last Name'))
+        verbose_name=gettext_lazy('Last Name'))
     email = models.EmailField(
         blank=False,
         null=False,
-        verbose_name=ugettext_lazy('Email'))
+        verbose_name=gettext_lazy('Email'))
     phone_number = models.CharField(
         validators=[phone_validator],
         max_length=15,
         blank=True,
-        verbose_name=ugettext_lazy('Phone Number'))
+        verbose_name=gettext_lazy('Phone Number'))
     address = models.OneToOneField(
         Address,
         blank=True,
         null=True,
         related_name='customer',
-        verbose_name=ugettext_lazy('Address'))
+        verbose_name=gettext_lazy('Address'))
 
     class Meta:
         abstract = True
@@ -292,43 +292,43 @@ class Card(AbstractOpenpayBase):
     alias = models.CharField(
         max_length=100,
         blank=True,
-        verbose_name=ugettext_lazy('Alias'))
+        verbose_name=gettext_lazy('Alias'))
     card_type = models.CharField(
         max_length=15,
         blank=False,
-        verbose_name=ugettext_lazy('Card type'))
+        verbose_name=gettext_lazy('Card type'))
     holder = models.CharField(
         max_length=100,
         blank=True,
-        verbose_name=ugettext_lazy('Holder name'))
+        verbose_name=gettext_lazy('Holder name'))
     number = models.CharField(
         max_length=5,
         blank=False,
-        verbose_name=ugettext_lazy('Number'))
+        verbose_name=gettext_lazy('Number'))
     bank_name = models.CharField(
         default='',
         max_length=30,
         blank=False,
-        verbose_name=ugettext_lazy('Bank name'))
+        verbose_name=gettext_lazy('Bank name'))
     brand = models.CharField(
         default=hardcode.card_brands_unknown,
         choices=hardcode.card_brands,
         max_length=20,
         blank=False,
-        verbose_name=ugettext_lazy('Brand'))
+        verbose_name=gettext_lazy('Brand'))
     month = models.CharField(
         max_length=3,
         blank=True,
-        verbose_name=ugettext_lazy('Expiration month'))
+        verbose_name=gettext_lazy('Expiration month'))
     year = models.CharField(
         max_length=3,
         blank=True,
-        verbose_name=ugettext_lazy('Expiration year'))
+        verbose_name=gettext_lazy('Expiration year'))
     customer = models.ForeignKey(
         CustomerModel,
         blank=False,
         related_name='cards',
-        verbose_name=ugettext_lazy('Owner'))
+        verbose_name=gettext_lazy('Owner'))
 
     @classmethod
     def get_readonly_fields(self, instance=None):
@@ -416,67 +416,67 @@ class Plan(AbstractOpenpayBase):
     name = models.CharField(
         max_length=60,
         blank=False,
-        verbose_name=ugettext_lazy('Name'))
+        verbose_name=gettext_lazy('Name'))
     amount = models.DecimalField(
         decimal_places=2,
         max_digits=20,
         blank=False,
         null=False,
-        verbose_name=ugettext_lazy('Amount'))
+        verbose_name=gettext_lazy('Amount'))
     currency = models.CharField(
         default=hardcode.plan_currency_mxn,
         choices=hardcode.plan_currency,
         max_length=8,
         blank=True,
-        verbose_name=ugettext_lazy('Currency'))
+        verbose_name=gettext_lazy('Currency'))
     retry_times = models.IntegerField(
         default=3,
         blank=True,
         null=False,
-        verbose_name=ugettext_lazy('Number of retries'))
+        verbose_name=gettext_lazy('Number of retries'))
     excerpt = models.CharField(
         max_length=250,
         blank=True,
-        verbose_name=ugettext_lazy('Excerpt'))
+        verbose_name=gettext_lazy('Excerpt'))
     description = models.TextField(
         blank=True,
-        verbose_name=ugettext_lazy('Description'))
+        verbose_name=gettext_lazy('Description'))
     benefits = JSONField(
         default=dict(),
         blank=True,
-        verbose_name=ugettext_lazy('Benefits (as JSON)'))
+        verbose_name=gettext_lazy('Benefits (as JSON)'))
     status = models.CharField(
         choices=hardcode.plan_status,
         default=hardcode.plan_status_active,
         max_length=9,
         blank=True,
-        verbose_name=ugettext_lazy('Status'))
+        verbose_name=gettext_lazy('Status'))
     status_after_retry = models.CharField(
         choices=hardcode.plan_statusafter,
         default=hardcode.plan_statusafter_unpaid,
         max_length=11,
         blank=True,
-        verbose_name=ugettext_lazy('Status when retries are exhausted'))
+        verbose_name=gettext_lazy('Status when retries are exhausted'))
     trial_days = models.IntegerField(
         default=0,
         blank=True,
         null=False,
-        verbose_name=ugettext_lazy('Trial days'))
+        verbose_name=gettext_lazy('Trial days'))
     repeat_every = models.IntegerField(
         default=1,
         blank=True,
         null=False,
-        verbose_name=ugettext_lazy('Frecuency Number'))
+        verbose_name=gettext_lazy('Frecuency Number'))
     repeat_unit = models.CharField(
         choices=hardcode.plan_repeatunit,
         default=hardcode.plan_repeatunit_month,
         max_length=15,
         blank=True,
-        verbose_name=ugettext_lazy('Frecuency Unit'))
+        verbose_name=gettext_lazy('Frecuency Unit'))
 
     @property
     def repeat_verbose(self):
-        return ungettext_lazy(
+        return ngettext_lazy(
             '%(repeat_unit)s',
             '%(repeat_every)d %(repeat_unit)s',
             'repeat_every') % {
@@ -565,51 +565,51 @@ class Subscription(AbstractOpenpayBase):
         blank=False,
         null=False,
         related_name='subscriptions',
-        verbose_name=ugettext_lazy('Customer'))
+        verbose_name=gettext_lazy('Customer'))
     card = models.ForeignKey(
         Card,
         blank=False,
         null=False,
         related_name='subscriptions',
-        verbose_name=ugettext_lazy('Card'))
+        verbose_name=gettext_lazy('Card'))
     plan = models.ForeignKey(
         Plan,
         blank=False,
         null=False,
         related_name='subscriptions',
-        verbose_name=ugettext_lazy('Plan'))
+        verbose_name=gettext_lazy('Plan'))
     cancel_at_period_end = models.BooleanField(
         default=False,
         blank=True,
         null=False,
-        verbose_name=ugettext_lazy('Cancel at the end of period'))
+        verbose_name=gettext_lazy('Cancel at the end of period'))
     latest_charge_date = models.DateField(
         blank=True,
         null=True,
-        verbose_name=ugettext_lazy('Previous charge date'))
+        verbose_name=gettext_lazy('Previous charge date'))
     charge_date = models.DateField(
         blank=True,
         null=True,
-        verbose_name=ugettext_lazy('Next charge date'))
+        verbose_name=gettext_lazy('Next charge date'))
     period_end_date = models.DateField(
         blank=True,
         null=True,
-        verbose_name=ugettext_lazy('Period end date'))
+        verbose_name=gettext_lazy('Period end date'))
     status = models.CharField(
         default=hardcode.subscription_status_trial,
         choices=hardcode.subscription_status,
         max_length=10,
         blank=True,
-        verbose_name=ugettext_lazy('Status'))
+        verbose_name=gettext_lazy('Status'))
     current_period_number = models.IntegerField(
         default=0,
         blank=True,
         null=False,
-        verbose_name=ugettext_lazy('Trial days'))
+        verbose_name=gettext_lazy('Trial days'))
     trial_end_date = models.DateField(
         blank=True,
         null=True,
-        verbose_name=ugettext_lazy('Trial end date'))
+        verbose_name=gettext_lazy('Trial end date'))
 
     @classmethod
     def get_readonly_fields(self, instance=None):
@@ -718,69 +718,69 @@ class AbstractTransaction(AbstractOpenpayBase):
     authorization = models.CharField(
         max_length=10,
         blank=True,
-        verbose_name=ugettext_lazy('Authorization'))
+        verbose_name=gettext_lazy('Authorization'))
     transaction_type = models.CharField(
         default=hardcode.transaction_ttype_charge,
         choices=hardcode.transaction_ttype,
         max_length=10,
         blank=True,
-        verbose_name=ugettext_lazy('Transaction Type'))
+        verbose_name=gettext_lazy('Transaction Type'))
     operation_type = models.CharField(
         default=hardcode.transaction_otype_in,
         choices=hardcode.transaction_otype,
         max_length=4,
         blank=True,
-        verbose_name=ugettext_lazy('Operation Type'))
+        verbose_name=gettext_lazy('Operation Type'))
     method = models.CharField(
         default=hardcode.transaction_method_card,
         choices=hardcode.transaction_method,
         max_length=10,
         blank=True,
-        verbose_name=ugettext_lazy('Method'))
+        verbose_name=gettext_lazy('Method'))
     order_id = models.CharField(
         max_length=20,
         blank=True,
-        verbose_name=ugettext_lazy('Order ID'))
+        verbose_name=gettext_lazy('Order ID'))
     status = models.CharField(
         default=hardcode.transaction_status_inprogress,
         choices=hardcode.transaction_status,
         max_length=14,
         blank=True,
-        verbose_name=ugettext_lazy('Status'))
+        verbose_name=gettext_lazy('Status'))
     amount = models.DecimalField(
         decimal_places=2,
         max_digits=20,
         blank=False,
         null=False,
-        verbose_name=ugettext_lazy('Amount'))
+        verbose_name=gettext_lazy('Amount'))
     description = models.TextField(
         blank=True,
-        verbose_name=ugettext_lazy('Description'))
+        verbose_name=gettext_lazy('Description'))
     error_message = models.TextField(
         blank=True,
-        verbose_name=ugettext_lazy('Error Message'))
+        verbose_name=gettext_lazy('Error Message'))
     customer = models.ForeignKey(
         CustomerModel,
         blank=False,
         null=False,
-        verbose_name=ugettext_lazy('Customer'))
+        verbose_name=gettext_lazy('Customer'))
     currency = models.CharField(
         default=hardcode.transaction_currency_mxn,
         choices=hardcode.transaction_currency,
         max_length=8,
         blank=True,
-        verbose_name=ugettext_lazy('Currency'))
+        verbose_name=gettext_lazy('Currency'))
     # TODO: bank_account
     card = models.ForeignKey(
         Card,
         blank=True,
         null=True,
-        verbose_name=ugettext_lazy('Card'))
+        verbose_name=gettext_lazy('Card'))
     # TODO: card_points
     operation_date = models.DateTimeField(
         blank=True,
         null=True,
-        verbose_name=ugettext_lazy('Operation date'))
+        verbose_name=gettext_lazy('Operation date'))
 
     class Meta:
         abstract = True
@@ -804,12 +804,12 @@ class Charge(AbstractTransaction):
         blank=True,
         null=True,
         related_name='charges',
-        verbose_name=ugettext_lazy('Subscription'))
+        verbose_name=gettext_lazy('Subscription'))
     conciliated = models.BooleanField(
         default=True,
         blank=True,
         null=False,
-        verbose_name=ugettext_lazy('Conciliated'))
+        verbose_name=gettext_lazy('Conciliated'))
 
     @classmethod
     def get_readonly_fields(self, instance=None):
@@ -958,12 +958,12 @@ class Refund(AbstractTransaction):
         blank=False,
         null=False,
         related_name='refund',
-        verbose_name=ugettext_lazy('Charge'))
+        verbose_name=gettext_lazy('Charge'))
     conciliated = models.BooleanField(
         default=True,
         blank=True,
         null=False,
-        verbose_name=ugettext_lazy('Conciliated'))
+        verbose_name=gettext_lazy('Conciliated'))
 
     @classmethod
     def get_readonly_fields(self, instance=None):

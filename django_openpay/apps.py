@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-from django.utils.translation import gettext_lazy
+from . import gettext_lazy
 
 
 class DjangoOpenpayConfig(AppConfig):

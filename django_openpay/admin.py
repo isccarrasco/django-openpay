@@ -1,5 +1,5 @@
 from django.contrib import admin
-from . import models, ugettext
+from . import models, gettext
 from .utils import get_customer_model
 
 CustomerModel = get_customer_model()
@@ -37,7 +37,7 @@ class CardAdmin(admin.ModelAdmin):
             request,
             "%s successfully refreshed." % message_bit
         )
-    refresh.short_description = ugettext('Refresh selected instances')
+    refresh.short_description = gettext('Refresh selected instances')
 
     def dismiss(self, request, queryset):
         dismissed = 0
@@ -53,7 +53,7 @@ class CardAdmin(admin.ModelAdmin):
             request,
             "%s successfully dismissed." % message_bit
         )
-    dismiss.short_description = ugettext('Dismiss selected instances')
+    dismiss.short_description = gettext('Dismiss selected instances')
 
     def get_readonly_fields(self, request, obj=None):
         return models.Card.get_readonly_fields(obj)
@@ -80,7 +80,7 @@ class PlanAdmin(admin.ModelAdmin):
             request,
             "%s successfully refreshed." % message_bit
         )
-    refresh.short_description = ugettext('Refresh selected instances')
+    refresh.short_description = gettext('Refresh selected instances')
 
     def dismiss(self, request, queryset):
         dismissed = 0
@@ -96,7 +96,7 @@ class PlanAdmin(admin.ModelAdmin):
             request,
             "%s successfully dismissed." % message_bit
         )
-    dismiss.short_description = ugettext('Dismiss selected instances')
+    dismiss.short_description = gettext('Dismiss selected instances')
 
     def get_readonly_fields(self, request, obj=None):
         return models.Plan.get_readonly_fields(obj)
@@ -123,7 +123,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
             request,
             "%s successfully refreshed." % message_bit
         )
-    refresh.short_description = ugettext('Refresh selected instances')
+    refresh.short_description = gettext('Refresh selected instances')
 
     def dismiss(self, request, queryset):
         dismissed = 0
@@ -139,7 +139,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
             request,
             "%s successfully dismissed." % message_bit
         )
-    dismiss.short_description = ugettext('Dismiss selected instances')
+    dismiss.short_description = gettext('Dismiss selected instances')
 
     def get_readonly_fields(self, request, obj=None):
         return models.Subscription.get_readonly_fields(obj)
@@ -166,7 +166,7 @@ class RefundAdmin(admin.ModelAdmin):
             request,
             "%s successfully refreshed." % message_bit
         )
-    refresh.short_description = ugettext('Refresh selected instances')
+    refresh.short_description = gettext('Refresh selected instances')
 
     def dismiss(self, request, queryset):
         dismissed = 0
@@ -182,7 +182,7 @@ class RefundAdmin(admin.ModelAdmin):
             request,
             "%s successfully dismissed." % message_bit
         )
-    dismiss.short_description = ugettext('Dismiss selected instances')
+    dismiss.short_description = gettext('Dismiss selected instances')
 
     def get_readonly_fields(self, request, obj=None):
         return models.Refund.get_readonly_fields(obj)
@@ -209,7 +209,7 @@ class ChargeAdmin(admin.ModelAdmin):
             request,
             "%s successfully refreshed." % message_bit
         )
-    refresh.short_description = ugettext('Refresh selected instances')
+    refresh.short_description = gettext('Refresh selected instances')
 
     def capture(self, request, queryset):
         captured = 0
@@ -224,7 +224,7 @@ class ChargeAdmin(admin.ModelAdmin):
             request,
             "%s successfully captured." % message_bit
         )
-    capture.short_description = ugettext('Capture selected charges')
+    capture.short_description = gettext('Capture selected charges')
 
     def refund(self, request, queryset):
         refunded = 0
@@ -239,7 +239,7 @@ class ChargeAdmin(admin.ModelAdmin):
                 request,
                 "%s successfully refunded." % message_bit
             )
-    refund.short_description = ugettext('Refund selected charges')
+    refund.short_description = gettext('Refund selected charges')
 
     def dismiss(self, request, queryset):
         dismissed = 0
@@ -255,7 +255,7 @@ class ChargeAdmin(admin.ModelAdmin):
             request,
             "%s successfully dismissed." % message_bit
         )
-    dismiss.short_description = ugettext('Dismiss selected instances')
+    dismiss.short_description = gettext('Dismiss selected instances')
 
     def get_readonly_fields(self, request, obj=None):
         return models.Charge.get_readonly_fields(obj)

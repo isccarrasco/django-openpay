@@ -9,7 +9,7 @@ import base64
 import binascii
 from urllib.parse import unquote_plus
 
-from . import ugettext_lazy
+from . import gettext_lazy
 
 
 def get_customer_model():

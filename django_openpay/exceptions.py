@@ -1,4 +1,4 @@
-from . import ugettext
+from . import gettext
 
 
 class DjangoOpenpayError(Exception):
@@ -12,7 +12,7 @@ class DjangoOpenpayError(Exception):
 class OpenpayObjectDoesNotExist(DjangoOpenpayError):
     def __init__(self):
         super(OpenpayObjectDoesNotExist, self).__init__(
-            ugettext("This object's code does not exists inside the"
+            gettext("This object's code does not exists inside the"
                      " OpenPay API.")
         )
 

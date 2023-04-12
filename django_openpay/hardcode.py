@@ -1,4 +1,4 @@
-from django.utils.translation import gettext_lazy
+from . import gettext_lazy
 
 address_countrycodes = (  # FIXME: Translate from spanish to english
     ('AF', gettext_lazy('Afganistán')),
