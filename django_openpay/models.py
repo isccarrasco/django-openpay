@@ -180,6 +180,7 @@ class AbstractCustomer(AbstractOpenpayBase):
         verbose_name=gettext_lazy('Phone Number'))
     address = models.OneToOneField(
         Address,
+        on_delete=models.DO_NOTHING,
         blank=True,
         null=True,
         related_name='customer',
