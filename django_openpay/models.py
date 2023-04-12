@@ -327,6 +327,7 @@ class Card(AbstractOpenpayBase):
         verbose_name=gettext_lazy('Expiration year'))
     customer = models.ForeignKey(
         CustomerModel,
+        on_delete=models.DO_NOTHING,
         blank=False,
         related_name='cards',
         verbose_name=gettext_lazy('Owner'))
