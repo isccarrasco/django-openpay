@@ -44,7 +44,7 @@ class AbstractOpenpayBase(models.Model):
         abstract = True
 
     @classmethod
-    def get_readonly_fields(self, instance=None):
+    def get_readonly_fields(cls, instance=None):
         raise NotImplementedError
 
     def op_commit(self):
@@ -135,7 +135,7 @@ class Address(models.Model):
         verbose_name=gettext_lazy('Creation date'))
 
     @classmethod
-    def get_readonly_fields(self, instance=None):
+    def get_readonly_fields(cls, instance=None):
         if instance:
             return ['creation_date']
         return ['creation_date']
@@ -190,7 +190,7 @@ class AbstractCustomer(AbstractOpenpayBase):
         abstract = True
 
     @classmethod
-    def get_readonly_fields(self, instance=None):
+    def get_readonly_fields(cls, instance=None):
         if instance:
             return ['openpay_id', 'creation_date']
         return ['openpay_id', 'creation_date']
@@ -333,7 +333,7 @@ class Card(AbstractOpenpayBase):
         verbose_name=gettext_lazy('Owner'))
 
     @classmethod
-    def get_readonly_fields(self, instance=None):
+    def get_readonly_fields(cls, instance=None):
         if instance:
             return ['openpay_id', 'card_type', 'holder', 'number', 'month',
                     'bank_name', 'brand', 'year', 'customer', 'creation_date']
@@ -341,11 +341,11 @@ class Card(AbstractOpenpayBase):
                 'bank_name', 'brand', 'customer', 'creation_date']
 
     @classmethod
-    def create_with_token(cls, customerId, tokenId, deviceId, alias=''):
+    def create_with_token(cls, customer_id, token_id, device_id, alias=''):
         card_op = openpay.Card.create(
-            customer=customerId, token_id=tokenId, device_session_id=deviceId)
-        customer = get_customer_model().objects.get(openpay_id=customerId)
-        # The card addres cannot be consulted
+            customer=customer_id, token_id=token_id, device_session_id=device_id)
+        customer = get_customer_model().objects.get(openpay_id=customer_id)
+        # The card address cannot be consulted
         card = cls(
             openpay_id=card_op.id,
             alias=alias,
@@ -564,18 +564,21 @@ def plan_postdelete(sender, instance, **kwargs):
 class Subscription(AbstractOpenpayBase):
     customer = models.ForeignKey(
         CustomerModel,
+        on_delete=models.DO_NOTHING,
         blank=False,
         null=False,
         related_name='subscriptions',
         verbose_name=gettext_lazy('Customer'))
     card = models.ForeignKey(
         Card,
+        on_delete=models.DO_NOTHING,
         blank=False,
         null=False,
         related_name='subscriptions',
         verbose_name=gettext_lazy('Card'))
     plan = models.ForeignKey(
         Plan,
+        on_delete=models.DO_NOTHING,
         blank=False,
         null=False,
         related_name='subscriptions',
@@ -614,7 +617,7 @@ class Subscription(AbstractOpenpayBase):
         verbose_name=gettext_lazy('Trial end date'))
 
     @classmethod
-    def get_readonly_fields(self, instance=None):
+    def get_readonly_fields(cls, instance=None):
         if instance:
             return ['openpay_id', 'customer', 'plan', 'charge_date',
                     'latest_charge_date', 'period_end_date', 'status',
@@ -763,6 +766,7 @@ class AbstractTransaction(AbstractOpenpayBase):
         verbose_name=gettext_lazy('Error Message'))
     customer = models.ForeignKey(
         CustomerModel,
+        on_delete=models.DO_NOTHING,
         blank=False,
         null=False,
         verbose_name=gettext_lazy('Customer'))
@@ -775,6 +779,7 @@ class AbstractTransaction(AbstractOpenpayBase):
     # TODO: bank_account
     card = models.ForeignKey(
         Card,
+        on_delete=models.DO_NOTHING,
         blank=True,
         null=True,
         verbose_name=gettext_lazy('Card'))
@@ -788,7 +793,7 @@ class AbstractTransaction(AbstractOpenpayBase):
         abstract = True
 
     @classmethod
-    def get_readonly_fields(self, instance=None):
+    def get_readonly_fields(cls, instance=None):
         if instance:
             return ['openpay_id', 'authorization', 'transaction_type',
                     'operation_type', 'method', 'order_id', 'status', 'amount',
@@ -803,6 +808,7 @@ class AbstractTransaction(AbstractOpenpayBase):
 class Charge(AbstractTransaction):
     subscription = models.ForeignKey(
         Subscription,
+        on_delete=models.DO_NOTHING,
         blank=True,
         null=True,
         related_name='charges',
@@ -814,7 +820,7 @@ class Charge(AbstractTransaction):
         verbose_name=gettext_lazy('Conciliated'))
 
     @classmethod
-    def get_readonly_fields(self, instance=None):
+    def get_readonly_fields(cls, instance=None):
         if instance:
             return ['conciliated', ] + super().get_readonly_fields(instance)
         return ['conciliated', ] + super().get_readonly_fields(instance)
@@ -957,6 +963,7 @@ def charge_presave(sender, instance=None, **kwargs):
 class Refund(AbstractTransaction):
     charge = models.OneToOneField(
         Charge,
+        on_delete=models.DO_NOTHING,
         blank=False,
         null=False,
         related_name='refund',
@@ -968,7 +975,7 @@ class Refund(AbstractTransaction):
         verbose_name=gettext_lazy('Conciliated'))
 
     @classmethod
-    def get_readonly_fields(self, instance=None):
+    def get_readonly_fields(cls, instance=None):
         if instance:
             return ['charge', 'conciliated', ] + \
                 super().get_readonly_fields(instance)
